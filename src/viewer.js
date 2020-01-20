@@ -32,6 +32,7 @@ import { GUI } from 'dat.gui';
 
 import { environments } from '../assets/environment/index.js';
 import { createBackground } from '../lib/three-vignette.js';
+import * as THREE from 'three/build/three.module.js';
 
 const DEFAULT_CAMERA = '[default]';
 
@@ -57,6 +58,10 @@ Cache.enabled = true;
 export class Viewer {
 
   constructor (el, options) {
+
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+
     this.el = el;
     this.options = options;
 
@@ -98,10 +103,11 @@ export class Viewer {
 
     this.scene = new Scene();
 
-    const fov = options.preset === Preset.ASSET_GENERATOR
-      ? 0.8 * 180 / Math.PI
-      : 60;
-    this.defaultCamera = new PerspectiveCamera( fov, el.clientWidth / el.clientHeight, 0.01, 1000 );
+    // const fov = options.preset === Preset.ASSET_GENERATOR
+    //   ? 0.8 * 180 / Math.PI
+    //   : 60;
+
+    this.defaultCamera = new PerspectiveCamera( 70, el.clientWidth / el.clientHeight, 0.01, 10000 );
     this.activeCamera = this.defaultCamera;
     this.scene.add( this.defaultCamera );
 
@@ -147,6 +153,8 @@ export class Viewer {
     this.animate = this.animate.bind(this);
     requestAnimationFrame( this.animate );
     window.addEventListener('resize', this.resize.bind(this), false);
+    window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false );
+
   }
 
   animate (time) {
@@ -161,17 +169,31 @@ export class Viewer {
     this.render();
 
     this.prevTime = time;
-
   }
 
-  render () {
+  onMouseMove(event) {
+    const {clientHeight, clientWidth} = this.el.parentElement;
 
+    this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    
+
+    //console.log(this.mouse.x, this.mouse.y);
+  }
+
+
+  render () {
     this.renderer.render( this.scene, this.activeCamera );
     if (this.state.grid) {
       this.axesCamera.position.copy(this.defaultCamera.position)
       this.axesCamera.lookAt(this.axesScene.position)
       this.axesRenderer.render( this.axesScene, this.axesCamera );
     }
+
+    this.raycaster.setFromCamera( this.mouse, this.activeCamera );
+    //console.log(this.mouse.x, this.mouse.y);
+    var intersects = this.raycaster.intersectObjects( this.scene.children, true);
+    console.log(intersects.length);
   }
 
   resize () {

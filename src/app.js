@@ -40,6 +40,7 @@ class App {
     this.hideSpinner();
 
     const options = this.options;
+    options.model='assets/scene/scene0000_00_vh_clean_2_wt.glb'
 
     if (options.kiosk) {
       const headerEl = document.querySelector('header');
@@ -149,7 +150,9 @@ class App {
 
   hideSpinner () {
     this.spinnerEl.style.display = 'none';
-  }
+  };
+
+ 
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -157,3 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const app = new App(document.body, location);
 
 });
+
+
+
