@@ -40,7 +40,7 @@ class App {
     this.hideSpinner();
 
     const options = this.options;
-    options.model='assets/scene/scene0000_00_vh_clean_2_wt.glb'
+    options.model='assets/scene/scene.glb'
 
     if (options.kiosk) {
       const headerEl = document.querySelector('header');

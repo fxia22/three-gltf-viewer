@@ -13,27 +13,7 @@
   <script src="src/app.js"></script>
 </head>
 <body>
-  <header>
-    <h1><a href="/">glTF Viewer</a></h1>
-    <span class="separator layout-md"> | </span>
-    <a class="item layout-md" target="_blank" href="https://github.com/mrdoob/three.js/tree/r112">
-      three.js r112
-    </a>
-    <span class="separator layout-md"> | </span>
-    <a class="item layout-md" target="_blank" href="https://github.com/mrdoob/three.js/blob/r112/examples/js/loaders/GLTFLoader.js">
-      THREE.GLTFLoader@r112
-    </a>
-    <span class="separator"> | </span>
-    <a class="item" target="_blank" href="https://github.com/donmccurdy/three-gltf-viewer/issues/new">
-      help & feedback
-    </a>
-    <span class="separator"> | </span>
-    <a class="item" target="_blank" href="https://github.com/donmccurdy/three-gltf-viewer">
-      source
-    </a>
-    <span class="flex-grow"></span>
-    <button id="download-btn" class="item" style="display: none;">⬇&nbsp;&nbsp;&nbsp;Download</button>
-  </header>
+ 
   <main class="wrap">
     <div class="dropzone">
       <div class="placeholder">
@@ -50,7 +30,7 @@
     <div class="spinner"></div>
   </main>
   <script type="text/x-handlebars-template" id="report-toggle-template">
-    <div class="report-toggle level-{{issues.maxSeverity}}">
+    <!-- <div class="report-toggle level-{{issues.maxSeverity}}">
       <div class="report-toggle-text">
         {{#if issues}}
           {{#if issues.numErrors }}
@@ -71,7 +51,7 @@
         {{/if}}
       </div>
       <div class="report-toggle-close" aria-label="Hide">&times;</div>
-    </div>
+    </div> -->
   </script>
   <script type="text/x-handlebars-template" id="report-template">
     <!DOCTYPE html>
@@ -171,4 +151,5 @@
     </table>
   </script>
   <script src="https://analytics.donmccurdy.com/client.js"></script>
+  <div><h3> Find out the lamp by the window </h3> </div>
 </body>

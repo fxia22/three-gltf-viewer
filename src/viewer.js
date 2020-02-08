@@ -7,7 +7,7 @@ import {
   CubeTextureLoader,
   DirectionalLight,
   GridHelper,
-  HemisphereLight,
+  HemibboxLight,
   LinearEncoding,
   LoaderUtils,
   LoadingManager,
@@ -60,6 +60,8 @@ export class Viewer {
   constructor (el, options) {
 
     this.raycaster = new THREE.Raycaster();
+    
+
     this.mouse = new THREE.Vector2();
 
     this.el = el;
@@ -107,7 +109,7 @@ export class Viewer {
     //   ? 0.8 * 180 / Math.PI
     //   : 60;
 
-    this.defaultCamera = new PerspectiveCamera( 70, el.clientWidth / el.clientHeight, 0.01, 10000 );
+    this.defaultCamera = new PerspectiveCamera( 55, el.clientWidth / el.clientHeight, 0.01, 1000000 );
     this.activeCamera = this.defaultCamera;
     this.scene.add( this.defaultCamera );
 
@@ -154,7 +156,7 @@ export class Viewer {
     requestAnimationFrame( this.animate );
     window.addEventListener('resize', this.resize.bind(this), false);
     window.addEventListener( 'mousemove', this.onMouseMove.bind(this), false );
-
+    window.addEventListener( 'mouseup', this.onMouseUp.bind(this), false );
   }
 
   animate (time) {
@@ -182,6 +184,44 @@ export class Viewer {
   }
 
 
+  raycast() {
+
+    this.raycaster.setFromCamera( this.mouse, this.activeCamera );
+    //console.log(this.mouse.x, this.mouse.y);
+    console.log(this.scene.children.slice(3, 6));
+    this.raycaster.near = 0.3;
+    this.raycaster.far = 15000;
+
+    var intersects = this.raycaster.intersectObjects( this.scene.children.slice(2, 6), true);
+    //console.log(intersects.length);
+    //console.log(intersects)
+    if (intersects.length > 0) {
+      console.log('has intersect');
+      console.log(intersects[0].object.geometry);
+      
+      for (var i = 0; i < intersects.length; i++) { 
+
+      if (intersects[i].object.geometry.type == 'BoxGeometry') {
+        var color = new THREE.Color( 0xff0000 );
+        var other_color = new THREE.Color(0xffff00);
+        console.log(intersects[i].object.material.color);
+          if (intersects[i].object.material.color.equals(color))
+          { 
+                intersects[i].object.material.color = other_color
+          }
+          else {
+            intersects[i].object.material.color = color;
+          }
+        }
+      }
+
+    }
+  }
+
+  onMouseUp(event) {
+    this.raycast();
+  }
+
   render () {
     this.renderer.render( this.scene, this.activeCamera );
     if (this.state.grid) {
@@ -190,10 +230,6 @@ export class Viewer {
       this.axesRenderer.render( this.axesScene, this.axesCamera );
     }
 
-    this.raycaster.setFromCamera( this.mouse, this.activeCamera );
-    //console.log(this.mouse.x, this.mouse.y);
-    var intersects = this.raycaster.intersectObjects( this.scene.children, true);
-    console.log(intersects.length);
   }
 
   resize () {
@@ -208,6 +244,62 @@ export class Viewer {
     this.axesCamera.aspect = this.axesDiv.clientWidth / this.axesDiv.clientHeight;
     this.axesCamera.updateProjectionMatrix();
     this.axesRenderer.setSize(this.axesDiv.clientWidth, this.axesDiv.clientHeight);
+  }
+
+  load_cubes() {
+    //alert('load cubes');
+    console.log('load cubes');
+    var geometry = new THREE.BoxGeometry(0.47420787491578253 * 1.2,  0.420650816903123* 1.2, 0.2189200741615032* 1.2 );
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00,  opacity: 0.3,
+    transparent: true} );
+    var bbox = new THREE.Mesh( geometry, material );
+    this.scene.add( bbox );
+    bbox.position.set(6.10336013, 2.76569154, 1.03693518);
+
+    var tmp = bbox.position.z;
+    bbox.position.z = -bbox.position.y;
+    bbox.position.y = tmp;
+    
+
+    bbox.position.x -= this.scene_center.x;
+    bbox.position.y -= this.scene_center.y;
+    bbox.position.z -= this.scene_center.z;
+    bbox.rotation.y = -0.2791913636377127;
+
+
+    var geometry = new THREE.BoxGeometry(0.679641008820824* 1.2,  0.5288306474685669* 1.2, 0.4269075393676758* 1.2 );
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00,  opacity: 0.3,
+    transparent: true} );
+    var bbox = new THREE.Mesh( geometry, material );
+    this.scene.add( bbox );
+    bbox.position.set(1.27005076, 6.44200325, 1.49746966);
+
+    var tmp = bbox.position.z;
+    bbox.position.z = -bbox.position.y;
+    bbox.position.y = tmp;
+
+    bbox.position.x -= this.scene_center.x;
+    bbox.position.y -= this.scene_center.y;
+    bbox.position.z -= this.scene_center.z;
+
+    var geometry = new THREE.BoxGeometry(0.5134091857980968* 1.2,  0.4155950529778228* 1.2, 0.3014460880526146* 1.2 );
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00,  opacity: 0.3,
+    transparent: true} );
+    var bbox = new THREE.Mesh( geometry, material );
+    this.scene.add( bbox );
+    bbox.position.set(6.58116706, 6.35757483, 1.19634843);
+
+    var tmp = bbox.position.z;
+    bbox.position.z = -bbox.position.y;
+    bbox.position.y = tmp;
+    
+
+    bbox.position.x -= this.scene_center.x;
+    bbox.position.y -= this.scene_center.y;
+    bbox.position.z -= this.scene_center.z;
+
+    bbox.rotation.y = -0.39338210747018737;
+
   }
 
   load ( url, rootPath, assetMap ) {
@@ -249,6 +341,8 @@ export class Viewer {
       loader.load(url, (gltf) => {
 
         const scene = gltf.scene || gltf.scenes[0];
+        console.log(scene);
+        scene.rotation.x =  - 3.14159 / 2.0;
         const clips = gltf.animations || [];
         this.setContent(scene, clips);
 
@@ -259,11 +353,15 @@ export class Viewer {
 
         resolve(gltf);
 
+        this.load_cubes();
+
       }, undefined, reject);
 
     });
 
   }
+
+
 
   /**
    * @param {THREE.Object3D} object
@@ -276,7 +374,8 @@ export class Viewer {
     const box = new Box3().setFromObject(object);
     const size = box.getSize(new Vector3()).length();
     const center = box.getCenter(new Vector3());
-
+    this.scene_center = center;
+    console.log(center);
     this.controls.reset();
 
     object.position.x += (object.position.x - center.x);
@@ -285,6 +384,10 @@ export class Viewer {
     this.controls.maxDistance = size * 10;
     this.defaultCamera.near = size / 100;
     this.defaultCamera.far = size * 100;
+    //this.defaultCamera.up.x = 0;
+    //this.defaultCamera.up.y = 0;
+    //this.defaultCamera.up.z = 1;
+    
     this.defaultCamera.updateProjectionMatrix();
 
     if (this.options.cameraPosition) {
@@ -294,10 +397,10 @@ export class Viewer {
 
     } else {
 
-      this.defaultCamera.position.copy(center);
-      this.defaultCamera.position.x += size / 2.0;
-      this.defaultCamera.position.y += size / 5.0;
-      this.defaultCamera.position.z += size / 2.0;
+      //this.defaultCamera.position.copy(center);
+      this.defaultCamera.position.x += 5;
+      this.defaultCamera.position.y += 5;
+      this.defaultCamera.position.z += 2;
       this.defaultCamera.lookAt(center);
 
     }
@@ -424,7 +527,7 @@ export class Viewer {
     const state = this.state;
 
     if (this.options.preset === Preset.ASSET_GENERATOR) {
-      const hemiLight = new HemisphereLight();
+      const hemiLight = new HemibboxLight();
       hemiLight.name = 'hemi_light';
       this.scene.add(hemiLight);
       this.lights.push(hemiLight);
