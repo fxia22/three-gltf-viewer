@@ -33,7 +33,6 @@ import { GUI } from 'dat.gui';
 import { environments } from '../assets/environment/index.js';
 import { createBackground } from '../lib/three-vignette.js';
 import * as THREE from 'three/build/three.module.js';
-import TextSprite from '@seregpie/three.text-sprite';
 
 const DEFAULT_CAMERA = '[default]';
 
@@ -149,6 +148,8 @@ export class Viewer {
     this.skeletonHelpers = [];
     this.gridHelper = null;
     this.axesHelper = null;
+    this.text_shapes = [];
+
 
     this.addAxesHelper();
     this.addGUI();
@@ -225,6 +226,10 @@ export class Viewer {
   }
 
   render () {
+      
+    for (var i = 0; i < this.text_shapes.length; i++) {
+        this.text_shapes[i].lookAt(this.defaultCamera.position);
+    }
     this.renderer.render( this.scene, this.activeCamera );
     if (this.state.grid) {
       this.axesCamera.position.copy(this.defaultCamera.position)
@@ -247,6 +252,7 @@ export class Viewer {
     this.axesCamera.updateProjectionMatrix();
     this.axesRenderer.setSize(this.axesDiv.clientWidth, this.axesDiv.clientHeight);
   }
+    
 
   load_cubes() {
     //alert('load cubes');
@@ -255,28 +261,54 @@ export class Viewer {
     //var material = new THREE.MeshBasicMaterial( {color: 0xffff00,  opacity: 0.0,
     //transparent: true} );
     var edges = new THREE.EdgesGeometry( geometry );
-    var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00ff00, linewidth:3 } ) );
+    var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xffff00, linewidth:3 } ) );
       
     //var bbox = new THREE.Mesh( geometry, material );
     //this.scene.add( bbox );
     this.scene.add( line );
 
     line.position.set(this.options.sti.centerx, this.options.sti.centerz, -this.options.sti.centery);
-
     line.position.x -= this.scene_center.x;
     line.position.y -= this.scene_center.y;
     line.position.z -= this.scene_center.z;
     console.log('position', line.position);
     line.rotation.y = this.options.sti.yaw;
     console.log( this.options.sti.ndis);
+    var loader = new THREE.FontLoader();
+    var self = this;
       
+      
+    loader.load( 'assets/fonts/helvetiker_regular.typeface.json', function ( font ) {
+      var textGeometry = new THREE.TextGeometry( '1', {
+        font: font,
+        size: 0.25,
+        height: 0.025,
+      });
+
+      var textMaterial = new THREE.MeshPhongMaterial( 
+          { color: 0xff0000, specular: 0xffffff, side: THREE.DoubleSide, depthTest: false }
+      );
+
+      var mesh = new THREE.Mesh( textGeometry, textMaterial );
+        self.scene.add(mesh);
+        
+        mesh.position.x = self.options.sti.centerx;
+        mesh.position.y = self.options.sti.centerz + self.options.sti.dimy/2.0;
+        mesh.position.z = -self.options.sti.centery;
+        mesh.position.x -= self.scene_center.x;
+        mesh.position.y -= self.scene_center.y;
+        mesh.position.z -= self.scene_center.z;
+        self.text_shapes.push(mesh);
+     });   
+ 
+
     for (var i = 0; i < this.options.sti.ndis; i++) {
         var box = this.options.sti.dbbox[i];
         console.log(box);
         var geometry = new THREE.BoxGeometry(box.dimx, box.dimy, box.dimz);
   
         var edges = new THREE.EdgesGeometry( geometry );
-        var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xff0000, linewidth:3 } ) );
+        var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xffff00, linewidth:3 } ) );
 
         this.scene.add( line );
 
@@ -286,6 +318,32 @@ export class Viewer {
         line.position.y -= this.scene_center.y;
         line.position.z -= this.scene_center.z;
         line.rotation.y = box.yaw;
+           
+        
+         loader.load( 'assets/fonts/helvetiker_regular.typeface.json', function ( font ) {
+              for (var i = 0; i < self.options.sti.ndis; i++) {
+              var textGeometry = new THREE.TextGeometry( (i+2).toString(), {
+                font: font,
+                size: 0.25,
+                height: 0.025,
+              });
+
+              var textMaterial = new THREE.MeshPhongMaterial( 
+                { color: 0xff0000, specular: 0xffffff, side: THREE.DoubleSide, depthTest: false }
+              );
+
+              var mesh = new THREE.Mesh( textGeometry, textMaterial );
+                self.scene.add(mesh);
+                mesh.position.x = self.options.sti.dbbox[i].centerx;
+                mesh.position.y = self.options.sti.dbbox[i].centerz + self.options.sti.dbbox[i].dimy/2.0;
+                mesh.position.z = -self.options.sti.dbbox[i].centery;
+                mesh.position.x -= self.scene_center.x;
+                mesh.position.y -= self.scene_center.y;
+                mesh.position.z -= self.scene_center.z;
+                self.text_shapes.push(mesh);
+              }
+             });   
+        
     }
 
   }

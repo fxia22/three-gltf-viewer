@@ -1,5 +1,5 @@
 import { WEBGL } from 'three/examples/jsm/WebGL.js';
-import { Viewer } from './viewer.js';
+import { Viewer } from './viewer_validation.js';
 import { SimpleDropzone } from 'simple-dropzone';
 import { ValidationController } from './validation-controller.js';
 import queryString from 'query-string';
