@@ -58,6 +58,7 @@ Cache.enabled = true;
 export class Viewer {
 
   constructor (el, options) {
+    console.log(options);
 
     this.raycaster = new THREE.Raycaster();
     
@@ -89,7 +90,7 @@ export class Viewer {
       addLights: true,
       exposure: 1.0,
       textureEncoding: 'sRGB',
-      ambientIntensity: 0.3,
+      ambientIntensity: 2.5,
       ambientColor: 0xFFFFFF,
       directIntensity: 0.8 * Math.PI, // TODO(#116)
       directColor: 0xFFFFFF,
@@ -188,7 +189,7 @@ export class Viewer {
 
     this.raycaster.setFromCamera( this.mouse, this.activeCamera );
     //console.log(this.mouse.x, this.mouse.y);
-    console.log(this.scene.children.slice(3, 6));
+    // console.log(this.scene.children.slice(3, 6));
     this.raycaster.near = 0.3;
     this.raycaster.far = 15000;
 
@@ -197,14 +198,14 @@ export class Viewer {
     //console.log(intersects)
     if (intersects.length > 0) {
       console.log('has intersect');
-      console.log(intersects[0].object.geometry);
+      //console.log(intersects[0].object.geometry);
       
       for (var i = 0; i < intersects.length; i++) { 
 
       if (intersects[i].object.geometry.type == 'BoxGeometry') {
         var color = new THREE.Color( 0xff0000 );
         var other_color = new THREE.Color(0xffff00);
-        console.log(intersects[i].object.material.color);
+        //console.log(intersects[i].object.material.color);
           if (intersects[i].object.material.color.equals(color))
           { 
                 intersects[i].object.material.color = other_color
@@ -249,56 +250,42 @@ export class Viewer {
   load_cubes() {
     //alert('load cubes');
     console.log('load cubes');
-    var geometry = new THREE.BoxGeometry(0.47420787491578253 * 1.2,  0.420650816903123* 1.2, 0.2189200741615032* 1.2 );
-    var material = new THREE.MeshBasicMaterial( {color: 0xffff00,  opacity: 0.3,
-    transparent: true} );
-    var bbox = new THREE.Mesh( geometry, material );
-    this.scene.add( bbox );
-    bbox.position.set(6.10336013, 2.76569154, 1.03693518);
+    var geometry = new THREE.BoxGeometry(this.options.sti.dimx, this.options.sti.dimy, this.options.sti.dimz);
+    //var material = new THREE.MeshBasicMaterial( {color: 0xffff00,  opacity: 0.0,
+    //transparent: true} );
+    var edges = new THREE.EdgesGeometry( geometry );
+    var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00ff00, linewidth:3 } ) );
+      
+    //var bbox = new THREE.Mesh( geometry, material );
+    //this.scene.add( bbox );
+    this.scene.add( line );
 
-    var tmp = bbox.position.z;
-    bbox.position.z = -bbox.position.y;
-    bbox.position.y = tmp;
-    
+    line.position.set(this.options.sti.centerx, this.options.sti.centerz, -this.options.sti.centery);
 
-    bbox.position.x -= this.scene_center.x;
-    bbox.position.y -= this.scene_center.y;
-    bbox.position.z -= this.scene_center.z;
-    bbox.rotation.y = -0.2791913636377127;
+    line.position.x -= this.scene_center.x;
+    line.position.y -= this.scene_center.y;
+    line.position.z -= this.scene_center.z;
+    console.log('position', line.position);
+    line.rotation.y = this.options.sti.yaw;
+    console.log( this.options.sti.ndis);
+      
+    for (var i = 0; i < this.options.sti.ndis; i++) {
+        var box = this.options.sti.dbbox[i];
+        console.log(box);
+        var geometry = new THREE.BoxGeometry(box.dimx, box.dimy, box.dimz);
+  
+        var edges = new THREE.EdgesGeometry( geometry );
+        var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xff0000, linewidth:3 } ) );
 
+        this.scene.add( line );
 
-    var geometry = new THREE.BoxGeometry(0.679641008820824* 1.2,  0.5288306474685669* 1.2, 0.4269075393676758* 1.2 );
-    var material = new THREE.MeshBasicMaterial( {color: 0xffff00,  opacity: 0.3,
-    transparent: true} );
-    var bbox = new THREE.Mesh( geometry, material );
-    this.scene.add( bbox );
-    bbox.position.set(1.27005076, 6.44200325, 1.49746966);
+        line.position.set(box.centerx, box.centerz, -box.centery);
 
-    var tmp = bbox.position.z;
-    bbox.position.z = -bbox.position.y;
-    bbox.position.y = tmp;
-
-    bbox.position.x -= this.scene_center.x;
-    bbox.position.y -= this.scene_center.y;
-    bbox.position.z -= this.scene_center.z;
-
-    var geometry = new THREE.BoxGeometry(0.5134091857980968* 1.2,  0.4155950529778228* 1.2, 0.3014460880526146* 1.2 );
-    var material = new THREE.MeshBasicMaterial( {color: 0xffff00,  opacity: 0.3,
-    transparent: true} );
-    var bbox = new THREE.Mesh( geometry, material );
-    this.scene.add( bbox );
-    bbox.position.set(6.58116706, 6.35757483, 1.19634843);
-
-    var tmp = bbox.position.z;
-    bbox.position.z = -bbox.position.y;
-    bbox.position.y = tmp;
-    
-
-    bbox.position.x -= this.scene_center.x;
-    bbox.position.y -= this.scene_center.y;
-    bbox.position.z -= this.scene_center.z;
-
-    bbox.rotation.y = -0.39338210747018737;
+        line.position.x -= this.scene_center.x;
+        line.position.y -= this.scene_center.y;
+        line.position.z -= this.scene_center.z;
+        line.rotation.y = box.yaw;
+    }
 
   }
 
@@ -342,7 +329,7 @@ export class Viewer {
 
         const scene = gltf.scene || gltf.scenes[0];
         console.log(scene);
-        scene.rotation.x =  - 3.14159 / 2.0;
+        scene.rotation.x =  - 3.14159265 / 2.0;
         const clips = gltf.animations || [];
         this.setContent(scene, clips);
 
@@ -377,10 +364,13 @@ export class Viewer {
     this.scene_center = center;
     console.log(center);
     this.controls.reset();
+    object.position.x = 0;
+    object.position.y = 0;
+    object.position.z = 0;
 
-    object.position.x += (object.position.x - center.x);
-    object.position.y += (object.position.y - center.y);
-    object.position.z += (object.position.z - center.z);
+    object.position.x -= center.x;// += (object.position.x - center.x);
+    object.position.y -= center.y; //+= (object.position.y - center.y);
+    object.position.z -= center.z;//+= (object.position.z - center.z);
     this.controls.maxDistance = size * 10;
     this.defaultCamera.near = size / 100;
     this.defaultCamera.far = size * 100;
@@ -515,11 +505,11 @@ export class Viewer {
 
     this.renderer.toneMappingExposure = state.exposure;
 
-    if (lights.length === 2) {
+    if (lights.length === 1) {
       lights[0].intensity = state.ambientIntensity;
       lights[0].color.setHex(state.ambientColor);
-      lights[1].intensity = state.directIntensity;
-      lights[1].color.setHex(state.directColor);
+      //lights[1].intensity = state.directIntensity;
+      //lights[1].color.setHex(state.directColor);
     }
   }
 
@@ -538,12 +528,12 @@ export class Viewer {
     light1.name = 'ambient_light';
     this.defaultCamera.add( light1 );
 
-    const light2  = new DirectionalLight(state.directColor, state.directIntensity);
-    light2.position.set(0.5, 0, 0.866); // ~60º
-    light2.name = 'main_light';
-    this.defaultCamera.add( light2 );
+    // const light2  = new DirectionalLight(state.directColor, state.directIntensity);
+    // light2.position.set(0.5, 0, 0.866); // ~60º
+    // light2.name = 'main_light';
+    // this.defaultCamera.add( light2 );
 
-    this.lights.push(light1, light2);
+    this.lights.push(light1);
   }
 
   removeLights () {
@@ -555,20 +545,20 @@ export class Viewer {
 
   updateEnvironment () {
 
-    const environment = environments.filter((entry) => entry.name === this.state.environment)[0];
+    // const environment = environments.filter((entry) => entry.name === this.state.environment)[0];
 
-    this.getCubeMapTexture( environment ).then(( { envMap } ) => {
+    // this.getCubeMapTexture( environment ).then(( { envMap } ) => {
 
-      if ((!envMap || !this.state.background) && this.activeCamera === this.defaultCamera) {
-        this.scene.add(this.vignette);
-      } else {
-        this.scene.remove(this.vignette);
-      }
+    //   if ((!envMap || !this.state.background) && this.activeCamera === this.defaultCamera) {
+    //     this.scene.add(this.vignette);
+    //   } else {
+    //     this.scene.remove(this.vignette);
+    //   }
 
-      this.scene.environment = envMap;
-      this.scene.background = this.state.background ? envMap : null;
+    //   this.scene.environment = envMap;
+    //   this.scene.background = this.state.background ? envMap : null;
 
-    });
+    // });
 
   }
 
@@ -664,45 +654,45 @@ export class Viewer {
 
   addGUI () {
 
-    const gui = this.gui = new GUI({autoPlace: false, width: 260, hideable: true});
+    const gui = this.gui = new GUI({autoPlace: false, width: 260, hideable: false});
 
     // Display controls.
-    const dispFolder = gui.addFolder('Display');
-    const envBackgroundCtrl = dispFolder.add(this.state, 'background');
-    envBackgroundCtrl.onChange(() => this.updateEnvironment());
-    const wireframeCtrl = dispFolder.add(this.state, 'wireframe');
-    wireframeCtrl.onChange(() => this.updateDisplay());
-    const skeletonCtrl = dispFolder.add(this.state, 'skeleton');
-    skeletonCtrl.onChange(() => this.updateDisplay());
-    const gridCtrl = dispFolder.add(this.state, 'grid');
-    gridCtrl.onChange(() => this.updateDisplay());
-    dispFolder.add(this.controls, 'autoRotate');
-    dispFolder.add(this.controls, 'screenSpacePanning');
-    const bgColor1Ctrl = dispFolder.addColor(this.state, 'bgColor1');
-    const bgColor2Ctrl = dispFolder.addColor(this.state, 'bgColor2');
-    bgColor1Ctrl.onChange(() => this.updateBackground());
-    bgColor2Ctrl.onChange(() => this.updateBackground());
+    //const dispFolder = gui.addFolder('Display');
+    // const envBackgroundCtrl = dispFolder.add(this.state, 'background');
+    // envBackgroundCtrl.onChange(() => this.updateEnvironment());
+    // const wireframeCtrl = dispFolder.add(this.state, 'wireframe');
+    // wireframeCtrl.onChange(() => this.updateDisplay());
+    // const skeletonCtrl = dispFolder.add(this.state, 'skeleton');
+    // skeletonCtrl.onChange(() => this.updateDisplay());
+    // const gridCtrl = dispFolder.add(this.state, 'grid');
+    // gridCtrl.onChange(() => this.updateDisplay());
+    gui.add(this.controls, 'autoRotate');
+    // dispFolder.add(this.controls, 'screenSpacePanning');
+    // const bgColor1Ctrl = dispFolder.addColor(this.state, 'bgColor1');
+    // const bgColor2Ctrl = dispFolder.addColor(this.state, 'bgColor2');
+    // bgColor1Ctrl.onChange(() => this.updateBackground());
+    // bgColor2Ctrl.onChange(() => this.updateBackground());
 
     // Lighting controls.
-    const lightFolder = gui.addFolder('Lighting');
-    const encodingCtrl = lightFolder.add(this.state, 'textureEncoding', ['sRGB', 'Linear']);
-    encodingCtrl.onChange(() => this.updateTextureEncoding());
-    lightFolder.add(this.renderer, 'outputEncoding', {sRGB: sRGBEncoding, Linear: LinearEncoding})
-      .onChange(() => {
-        this.renderer.outputEncoding = Number(this.renderer.outputEncoding);
-        traverseMaterials(this.content, (material) => {
-          material.needsUpdate = true;
-        });
-      });
-    const envMapCtrl = lightFolder.add(this.state, 'environment', environments.map((env) => env.name));
-    envMapCtrl.onChange(() => this.updateEnvironment());
+    //const lightFolder = gui.addFolder('Lighting');
+    // const encodingCtrl = lightFolder.add(this.state, 'textureEncoding', ['sRGB', 'Linear']);
+    // encodingCtrl.onChange(() => this.updateTextureEncoding());
+    // lightFolder.add(this.renderer, 'outputEncoding', {sRGB: sRGBEncoding, Linear: LinearEncoding})
+    //   .onChange(() => {
+    //     this.renderer.outputEncoding = Number(this.renderer.outputEncoding);
+    //     traverseMaterials(this.content, (material) => {
+    //       material.needsUpdate = true;
+    //     });
+    //   });
+    // const envMapCtrl = lightFolder.add(this.state, 'environment', environments.map((env) => env.name));
+    // envMapCtrl.onChange(() => this.updateEnvironment());
     [
-      lightFolder.add(this.state, 'exposure', 0, 2),
-      lightFolder.add(this.state, 'addLights').listen(),
-      lightFolder.add(this.state, 'ambientIntensity', 0, 2),
-      lightFolder.addColor(this.state, 'ambientColor'),
-      lightFolder.add(this.state, 'directIntensity', 0, 4), // TODO(#116)
-      lightFolder.addColor(this.state, 'directColor')
+      // lightFolder.add(this.state, 'exposure', 0, 2),
+      // lightFolder.add(this.state, 'addLights').listen(),
+      gui.add(this.state, 'ambientIntensity', 0, 7),
+      // lightFolder.addColor(this.state, 'ambientColor'),
+      // lightFolder.add(this.state, 'directIntensity', 0, 4), // TODO(#116)
+      // lightFolder.addColor(this.state, 'directColor')
     ].forEach((ctrl) => ctrl.onChange(() => this.updateLights()));
 
     // Animation controls.
@@ -723,12 +713,12 @@ export class Viewer {
     this.cameraFolder.domElement.style.display = 'none';
 
     // Stats.
-    const perfFolder = gui.addFolder('Performance');
-    const perfLi = document.createElement('li');
-    this.stats.dom.style.position = 'static';
-    perfLi.appendChild(this.stats.dom);
-    perfLi.classList.add('gui-stats');
-    perfFolder.__ul.appendChild( perfLi );
+    // const perfFolder = gui.addFolder('Performance');
+    // const perfLi = document.createElement('li');
+    // this.stats.dom.style.position = 'static';
+    // perfLi.appendChild(this.stats.dom);
+    // perfLi.classList.add('gui-stats');
+    // perfFolder.__ul.appendChild( perfLi );
 
     const guiWrap = document.createElement('div');
     this.el.appendChild( guiWrap );

@@ -190,7 +190,7 @@ export class ValidationController {
     this.report = null;
     this.toggleEl.innerHTML = this.toggleTpl({reportError: e, level: 0});
     this.showToggle();
-    this.bindListeners();
+    // this.bindListeners();
   }
 
   bindListeners () {

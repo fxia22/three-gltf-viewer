@@ -19,13 +19,28 @@ class App {
   constructor (el, location) {
 
     const hash = location.hash ? queryString.parse(location.hash) : {};
+
+
+      //const fs = require('fs');
+    var sti_dict = require('../assets/test.json');
+    console.log(sti_dict);
+
+    const queryString = window.location.search;
+    console.log(queryString);
+    const urlParams = new URLSearchParams(queryString);
+    const sti = urlParams.get('sti');
+    
+    var model = sti_dict[sti]['scan_id'];
+
+
     this.options = {
       kiosk: Boolean(hash.kiosk),
       model: hash.model || '',
       preset: hash.preset || '',
       cameraPosition: hash.cameraPosition
         ? hash.cameraPosition.split(',').map(Number)
-        : null
+        : null,
+      sti: sti_dict[sti]
     };
 
     this.el = el;
@@ -39,8 +54,10 @@ class App {
     this.createDropzone();
     this.hideSpinner();
 
+  
     const options = this.options;
-    options.model='assets/scene/scene.glb'
+    options.model='assets/scene/' + model + '_vh_clean_2_blender_uv.glb';
+    console.log('loading model', options.model);
 
     if (options.kiosk) {
       const headerEl = document.querySelector('header');
