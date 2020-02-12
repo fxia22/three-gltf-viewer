@@ -33,7 +33,6 @@ import { GUI } from 'dat.gui';
 import { environments } from '../assets/environment/index.js';
 import { createBackground } from '../lib/three-vignette.js';
 import * as THREE from 'three/build/three.module.js';
-import TextSprite from '@seregpie/three.text-sprite';
 
 const DEFAULT_CAMERA = '[default]';
 
@@ -668,7 +667,7 @@ export class Viewer {
     // skeletonCtrl.onChange(() => this.updateDisplay());
     // const gridCtrl = dispFolder.add(this.state, 'grid');
     // gridCtrl.onChange(() => this.updateDisplay());
-    gui.add(this.controls, 'autoRotate');
+    //gui.add(this.controls, 'autoRotate');
     // dispFolder.add(this.controls, 'screenSpacePanning');
     // const bgColor1Ctrl = dispFolder.addColor(this.state, 'bgColor1');
     // const bgColor2Ctrl = dispFolder.addColor(this.state, 'bgColor2');
@@ -688,14 +687,14 @@ export class Viewer {
     //   });
     // const envMapCtrl = lightFolder.add(this.state, 'environment', environments.map((env) => env.name));
     // envMapCtrl.onChange(() => this.updateEnvironment());
-    [
-      // lightFolder.add(this.state, 'exposure', 0, 2),
-      // lightFolder.add(this.state, 'addLights').listen(),
-      gui.add(this.state, 'ambientIntensity', 0, 7),
-      // lightFolder.addColor(this.state, 'ambientColor'),
-      // lightFolder.add(this.state, 'directIntensity', 0, 4), // TODO(#116)
-      // lightFolder.addColor(this.state, 'directColor')
-    ].forEach((ctrl) => ctrl.onChange(() => this.updateLights()));
+//     [
+//       // lightFolder.add(this.state, 'exposure', 0, 2),
+//       // lightFolder.add(this.state, 'addLights').listen(),
+//       gui.add(this.state, 'ambientIntensity', 0, 7),
+//       // lightFolder.addColor(this.state, 'ambientColor'),
+//       // lightFolder.add(this.state, 'directIntensity', 0, 4), // TODO(#116)
+//       // lightFolder.addColor(this.state, 'directColor')
+//     ].forEach((ctrl) => ctrl.onChange(() => this.updateLights()));
 
     // Animation controls.
     this.animFolder = gui.addFolder('Animation');
@@ -722,11 +721,11 @@ export class Viewer {
     // perfLi.classList.add('gui-stats');
     // perfFolder.__ul.appendChild( perfLi );
 
-    const guiWrap = document.createElement('div');
-    this.el.appendChild( guiWrap );
-    guiWrap.classList.add('gui-wrap');
-    guiWrap.appendChild(gui.domElement);
-    gui.open();
+//     const guiWrap = document.createElement('div');
+//     this.el.appendChild( guiWrap );
+//     guiWrap.classList.add('gui-wrap');
+//     guiWrap.appendChild(gui.domElement);
+//     gui.open();
 
   }
 

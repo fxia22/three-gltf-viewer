@@ -277,12 +277,12 @@ export class Viewer {
     var loader = new THREE.FontLoader();
     var self = this;
       
-      
+    //console.log(self.options.sti_shuffle);
     loader.load( 'assets/fonts/helvetiker_regular.typeface.json', function ( font ) {
-      var textGeometry = new THREE.TextGeometry( '1', {
+      var textGeometry = new THREE.TextGeometry( self.options.sti_shuffle.charAt(0), {
         font: font,
-        size: 0.25,
-        height: 0.025,
+        size: 0.25 * (self.options.sti.dimx + self.options.sti.dimz),
+        height: 0.025 * (self.options.sti.dimx + self.options.sti.dimz),
       });
 
       var textMaterial = new THREE.MeshPhongMaterial( 
@@ -322,10 +322,10 @@ export class Viewer {
         
          loader.load( 'assets/fonts/helvetiker_regular.typeface.json', function ( font ) {
               for (var i = 0; i < self.options.sti.ndis; i++) {
-              var textGeometry = new THREE.TextGeometry( (i+2).toString(), {
+              var textGeometry = new THREE.TextGeometry( self.options.sti_shuffle.charAt(i+1), {
                 font: font,
-                size: 0.25,
-                height: 0.025,
+                size: 0.25 * (self.options.sti.dbbox[i].dimx + self.options.sti.dbbox[i].dimz),
+                height: 0.025 * (self.options.sti.dbbox[i].dimx + self.options.sti.dbbox[i].dimz),
               });
 
               var textMaterial = new THREE.MeshPhongMaterial( 
@@ -726,7 +726,7 @@ export class Viewer {
     // skeletonCtrl.onChange(() => this.updateDisplay());
     // const gridCtrl = dispFolder.add(this.state, 'grid');
     // gridCtrl.onChange(() => this.updateDisplay());
-    gui.add(this.controls, 'autoRotate');
+//     gui.add(this.controls, 'autoRotate');
     // dispFolder.add(this.controls, 'screenSpacePanning');
     // const bgColor1Ctrl = dispFolder.addColor(this.state, 'bgColor1');
     // const bgColor2Ctrl = dispFolder.addColor(this.state, 'bgColor2');
@@ -746,14 +746,14 @@ export class Viewer {
     //   });
     // const envMapCtrl = lightFolder.add(this.state, 'environment', environments.map((env) => env.name));
     // envMapCtrl.onChange(() => this.updateEnvironment());
-    [
-      // lightFolder.add(this.state, 'exposure', 0, 2),
-      // lightFolder.add(this.state, 'addLights').listen(),
-      gui.add(this.state, 'ambientIntensity', 0, 7),
-      // lightFolder.addColor(this.state, 'ambientColor'),
-      // lightFolder.add(this.state, 'directIntensity', 0, 4), // TODO(#116)
-      // lightFolder.addColor(this.state, 'directColor')
-    ].forEach((ctrl) => ctrl.onChange(() => this.updateLights()));
+//     [
+//       // lightFolder.add(this.state, 'exposure', 0, 2),
+//       // lightFolder.add(this.state, 'addLights').listen(),
+//       gui.add(this.state, 'ambientIntensity', 0, 7),
+//       // lightFolder.addColor(this.state, 'ambientColor'),
+//       // lightFolder.add(this.state, 'directIntensity', 0, 4), // TODO(#116)
+//       // lightFolder.addColor(this.state, 'directColor')
+//     ].forEach((ctrl) => ctrl.onChange(() => this.updateLights()));
 
     // Animation controls.
     this.animFolder = gui.addFolder('Animation');
@@ -780,11 +780,11 @@ export class Viewer {
     // perfLi.classList.add('gui-stats');
     // perfFolder.__ul.appendChild( perfLi );
 
-    const guiWrap = document.createElement('div');
-    this.el.appendChild( guiWrap );
-    guiWrap.classList.add('gui-wrap');
-    guiWrap.appendChild(gui.domElement);
-    gui.open();
+//     const guiWrap = document.createElement('div');
+//     this.el.appendChild( guiWrap );
+//     guiWrap.classList.add('gui-wrap');
+//     guiWrap.appendChild(gui.domElement);
+//     gui.open();
 
   }
 

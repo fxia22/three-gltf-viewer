@@ -49,7 +49,7 @@ class App {
     this.spinnerEl = el.querySelector('.spinner');
     this.dropEl = el.querySelector('.dropzone');
     this.inputEl = el.querySelector('#file-input');
-    this.validationCtrl = new ValidationController(el);
+    //this.validationCtrl = new ValidationController(el);
 
     //this.createDropzone();
     this.hideSpinner();
@@ -138,9 +138,9 @@ class App {
       .load(fileURL, rootPath, fileMap)
       .catch((e) => this.onError(e))
       .then((gltf) => {
-        if (!this.options.kiosk) {
-          this.validationCtrl.validate(fileURL, rootPath, fileMap, gltf);
-        }
+//         if (!this.options.kiosk) {
+//           this.validationCtrl.validate(fileURL, rootPath, fileMap, gltf);
+//         }
         cleanup();
       });
   }

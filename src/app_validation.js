@@ -23,6 +23,7 @@ class App {
 
       //const fs = require('fs');
     var sti_dict = require('../assets/test.json');
+    var sti_shuffle = require('../assets/shuffle.json');
     console.log(sti_dict);
 
     const queryString = window.location.search;
@@ -40,7 +41,8 @@ class App {
       cameraPosition: hash.cameraPosition
         ? hash.cameraPosition.split(',').map(Number)
         : null,
-      sti: sti_dict[sti]
+      sti: sti_dict[sti],
+      sti_shuffle: sti_shuffle[sti]
     };
 
     this.el = el;
@@ -49,7 +51,7 @@ class App {
     this.spinnerEl = el.querySelector('.spinner');
     this.dropEl = el.querySelector('.dropzone');
     this.inputEl = el.querySelector('#file-input');
-    this.validationCtrl = new ValidationController(el);
+//     this.validationCtrl = new ValidationController(el);
 
     //this.createDropzone();
     this.hideSpinner();
@@ -138,9 +140,9 @@ class App {
       .load(fileURL, rootPath, fileMap)
       .catch((e) => this.onError(e))
       .then((gltf) => {
-        if (!this.options.kiosk) {
-          this.validationCtrl.validate(fileURL, rootPath, fileMap, gltf);
-        }
+//         if (!this.options.kiosk) {
+//           this.validationCtrl.validate(fileURL, rootPath, fileMap, gltf);
+//         }
         cleanup();
       });
   }
