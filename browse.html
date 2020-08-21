@@ -171,77 +171,52 @@
     </div>
 </nav>
 
-<div class="container-fluid" style="width: 100%; height: 100%;">
-    <!-- Scan Viewer-->
-    <div class="container-fluid" style="width: 100%; height: 50%;">
-        <div class="row" style="position: absolute; height: 50%; width: 100%;">
-            <div class="scan_viewer" style="height: 100%; width: 100%; margin-left: 25%; margin-right: 25%">
-            </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="scan_viewer col-12" style="position: absolute; width: 56vw; height: 50vh; align-content: center; margin-left: 20vw;">
         </div>
     </div>
-
-    <!-- Nr3d Related Stuff-->
-    <!--    <div class="container-fluid">-->
-    <!--        <div class="row">-->
-    <!--            <div class="col-2" style="text-align: center">Scan Objects</div>-->
-    <!--            <div class="col-2" style="text-align: center">Object Instances</div>-->
-    <!--            <div class="col-8" style="text-align: left">-->
-    <!--                    <table class="table table-striped">-->
-    <!--                            <thead>-->
-    <!--                            <tr>-->
-    <!--                                <th>Utterances</th>-->
-    <!--                            </tr>-->
-    <!--                            </thead>-->
-    <!--                        <tbody>-->
-    <!--                        </tbody>-->
-    <!--                    </table>-->
-
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </div>-->
-    <div class="container-fluid" style="margin-top: 2%;">
-        <div class="row">
-            <!-- Scan Objects-->
-            <div class="col-2" style="margin-left: 20%">
-                <table class="table table-striped" style="overflow:scroll; height: 5%">
-                    <thead>
-                    <tr>
-                        <th>Scan Objects</th>
-                    </tr>
-                    </thead>
-                    <tbody id="instance_labels_list">
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="col-2">
-                <table class="table table-striped" style="overflow:scroll; height: 5%">
-                    <thead>
-                    <tr>
-                        <th>Object Instances</th>
-                    </tr>
-                    </thead>
-                    <tbody id="objects_list">
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="col-4">
-                <table class="table table-striped" style="overflow:scroll; height: 5%">
-                    <thead>
-                    <tr>
-                        <th>Nr3D Utterances</th>
-                    </tr>
-                    </thead>
-                    <tbody id="object_utterances">
-                    </tbody>
-                </table>
-            </div>
+    <div class="row" style="margin-top: 50vh; width: 90vw; align-content: center; margin-bottom: 10vh;">
+        <!-- Scan Objects-->
+        <div class="col-2" style=" height: 40vh;">
+            <thead>
+                <tr>
+                    <th> <strong>Scan Objects</strong></th>
+                </tr>
+                </thead>
+            <table class="table-responsive table-striped" style="overflow:scroll; height: 40vh; margin-bottom: 10vh">
+                <tbody id="instance_labels_list">
+                </tbody>
+            </table>
         </div>
 
+        <div class="col-3" style=" height: 40vh;">
+            <thead>
+                <tr>
+                    <th> <strong> Object Instances </strong></th>
+                </tr>
+                </thead>
+            <table class="table-responsive table-striped" style="overflow:scroll; height: 40vh; margin-bottom: 10vh">
+                
+                <tbody id="objects_list">
+                </tbody>
+            </table>
+        </div>
 
+        <div class="col-7" style=" height: 40vh;">
+            <thead>
+                <tr>
+                    <th><strong>Nr3D Utterances</strong></th>
+                </tr>
+                </thead>
+            <table class="table-responsive table-striped" style="overflow:scroll; height: 40vh; margin-bottom: 10vh">
+                <tbody id="object_utterances">
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+<!-- </div> -->
 <!--<div class="container-fuild">-->
 <!--    <div class="row">-->
 
