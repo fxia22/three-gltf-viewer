@@ -207,10 +207,17 @@ class App {
         app_instance.selected_instance_label = this.id;
         app_instance.selectButton(this.id);
 
+        var first_object_el = -1;
         for (const object_id in app_instance.nr3d[app_instance.scene_id][this.innerHTML]) {
             var st = '<button type="button" class="list-group-item list-group-item-action" id="' + object_id + '"' + '>' + object_id + '</button>'
             var el = app_instance.htmlToElement(st)
             el.addEventListener("click", app_instance.showObjectUtterances, false)
+
+            if (first_object_el === -1) {
+                el.showObjectUtterances();
+                first_object_el = 2;
+            }
+
             objects_list.appendChild(el)
         }
     }

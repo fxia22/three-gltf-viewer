@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Nr3D Browser</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="author" content="ReferIt3D Team">
+    <meta name="description" content="ReferIt3D Nr3d Dataset Browser">
+    <link rel="shortcut icon" href="assets/favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <!-- ThreeJS-->
+    <script type="text/x-handlebars-template" id="report-toggle-template">
+        <!-- <div class="report-toggle level-{{issues.maxSeverity}}">
+          <div class="report-toggle-text">
+            {{#if issues}}
+              {{#if issues.numErrors }}
+                {{issues.numErrors}} errors.
+              {{else if issues.numWarnings}}
+                {{issues.numWarnings}} warnings.
+              {{else if issues.numHints}}
+                {{issues.numHints}} hints.
+              {{else if issues.numInfos}}
+                {{issues.numInfos}} notes.
+              {{else}}
+                Model details
+              {{/if}}
+            {{else if reportError}}
+              Validation could not run: {{reportError}}.
+            {{else}}
+              Validation could not run.
+            {{/if}}
+          </div>
+          <div class="report-toggle-close" aria-label="Hide">&times;</div>
+        </div> -->
+    </script>
+    <script type="text/x-handlebars-template" id="report-template">
+        <!DOCTYPE html>
+        <title>glTF 2.0 validation report</title>
+        <link href="https://fonts.googleapis.com/css?family=Raleway:300,400" rel="stylesheet">
+        <link rel="stylesheet" href="{{location.protocol}}//{{location.host}}/style.css">
+        <style>
+            body {
+                overflow-y: auto;
+            }
+        </style>
+        <div class="report">
+            <h1>Validation report</h1>
+            <ul>
+                <li><b>Format:</b> glTF {{info.version}}</li>
+                {{#if generator}}
+                <li>
+                    <b>Generator:</b> {{generator.name}}
+                    {{#if generator.docsURL}}(<a href="{{generator.docsURL}}" target="_blank">docs</a>){{/if}}
+                    {{#if generator.bugsURL}}(<a href="{{generator.bugsURL}}" target="_blank">bugs</a>){{/if}}
+                </li>
+                {{else}}
+                <li><b>Generator:</b> {{info.generator}}</li>
+                {{/if}}
+                {{#if info.extras}}
+                {{#if info.extras.title}}
+                <li><b>Title:</b> {{info.extras.title}}</li>
+                {{/if}}
+                {{#if info.extras.author}}
+                <li><b>Author:</b> {{{info.extras.author}}}</li>
+                {{/if}}
+                {{#if info.extras.license}}
+                <li><b>License:</b> {{{info.extras.license}}}</li>
+                {{/if}}
+                {{#if info.extras.source}}
+                <li><b>Source:</b> {{{info.extras.source}}}</li>
+                {{/if}}
+                {{/if}}
+                <li>
+                    <b>Stats:</b>
+                    <ul>
+                        <li>{{info.animationsCount}} animations</li>
+                        <li>{{info.materialsCount}} materials</li>
+                        <li>{{info.meshesCount}} meshes</li>
+                        <li>{{info.nodesCount}} nodes</li>
+                        <li>{{info.primitivesCount}} primitives</li>
+                        <li>{{info.texturesCount}} textures</li>
+                    </ul>
+                </li>
+                <li>
+                    <b>Extensions:</b> {{#unless info.extensionsUsed}}None{{/unless}}
+                    {{#if info.extensionsUsed}}
+                    <ul>
+                        {{#each info.extensionsUsed}}
+                        <li>{{this}}</li>
+                        {{/each}}
+                    </ul>
+                    <p><i>
+                        NOTE: Extensions above are present in the model, but may or may not be recognized by this
+                        viewer. Any "UNSUPPORTED_EXTENSION" warnings below refer only to extensions that could not
+                        be scanned by the validation suite, and may still have rendered correctly. See:
+                        <a href="https://github.com/donmccurdy/three-gltf-viewer/issues/122" target="_blank">three-gltf-viewer#122</a>
+                        {{/if}}
+                </li>
+            </ul>
+            <hr/>
+            <p>
+                Report generated by
+                <a href="https://github.com/KhronosGroup/glTF-Validator/">KhronosGroup/glTF-Validator</a>
+                {{validatorVersion}}.
+            </p>
+            {{#if issues.numErrors}}
+            {{> issuesTable messages=errors color="#f44336" title="Error"}}
+            {{/if}}
+            {{#if issues.numWarnings}}
+            {{> issuesTable messages=warnings color="#f9a825" title="Warning"}}
+            {{/if}}
+            {{#if issues.numHints}}
+            {{> issuesTable messages=hints color="#8bc34a" title="Hint"}}
+            {{/if}}
+            {{#if issues.numInfos}}
+            {{> issuesTable messages=infos color="#2196f3" title="Info"}}
+            {{/if}}
+        </div>
+    </script>
+    <script type="text/x-handlebars-template" id="report-table-partial">
+        <table class="report-table">
+            <thead>
+            <tr style="background: {{color}};">
+                <th>{{title}}</th>
+                <th>Message</th>
+                <th>Pointer</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each messages}}
+            <tr>
+                <td><code>{{code}}</code></td>
+                <td>{{message}}</td>
+                <td><code>{{pointer}}</code></td>
+            </tr>
+            {{/each}}
+            {{#unless issues.messages}}
+            <tr>
+                <td colspan="3">No issues found.</td>
+            </tr>
+            {{/unless}}
+            </tbody>
+        </table>
+    </script>
+
+    <!-- JS Nr3D Browser-->
+    <script src="src/app_sr3d_browser.js"></script>
+</head>
+<body>
+
+<!--Navigation Bar-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">ReferIt3D: Nr3D Browser</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="all_scans.html">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="https://referit3d.github.io/">Project Page <span class="sr-only">(current)</span></a>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="scan_viewer col-12" style="position: absolute; width: 56vw; height: 50vh; align-content: center; margin-left: 20vw;">
+        </div>
+    </div>
+    <div class="row" style="margin-top: 50vh; width: 90vw; align-content: center; margin-bottom: 10vh;">
+        <!-- Scan Objects-->
+        <div class="col-2" style=" height: 40vh;">
+            <thead>
+                <tr>
+                    <th> <strong>Scan Objects</strong></th>
+                </tr>
+                </thead>
+            <table class="table-responsive table-striped" style="overflow:scroll; height: 40vh; margin-bottom: 10vh">
+                <tbody id="instance_labels_list">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-3" style=" height: 40vh;">
+            <thead>
+                <tr>
+                    <th> <strong> Object Instances </strong></th>
+                </tr>
+                </thead>
+            <table class="table-responsive table-striped" style="overflow:scroll; height: 40vh; margin-bottom: 10vh">
+                
+                <tbody id="objects_list">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-7" style=" height: 40vh;">
+            <thead>
+                <tr>
+                    <th><strong>Nr3D Utterances</strong></th>
+                </tr>
+                </thead>
+            <table class="table-responsive table-striped" style="overflow:scroll; height: 40vh; margin-bottom: 10vh">
+                <tbody id="object_utterances">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- </div> -->
+<!--<div class="container-fuild">-->
+<!--    <div class="row">-->
+
+<!--    </div>-->
+
+
+<!--</div>-->
+</body>
+</html>
