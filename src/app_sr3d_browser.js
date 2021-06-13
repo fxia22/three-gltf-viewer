@@ -53,6 +53,7 @@ class App {
         console.log(el.clientHeight, el.clientWidth)
         this.viewer = null;
         this.viewerEl = null;
+        this.spinnerEl = el.querySelector('.spinner');
         this.dropEl = el.querySelector('.scan_viewer');
         this.inputEl = el.querySelector('#file-input');
         this.validationCtrl = new ValidationController(el);
