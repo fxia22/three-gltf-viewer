@@ -45,7 +45,8 @@ class App {
             cameraPosition: hash.cameraPosition
                 ? hash.cameraPosition.split(',').map(Number)
                 : null,
-            all_bboxes: this.bboxes
+            all_bboxes: this.bboxes,
+            app_ : this
         };
 
         this.el = el;
@@ -140,10 +141,11 @@ class App {
                     this.validationCtrl.validate(fileURL, rootPath, fileMap, gltf);
                 }
                 cleanup();
-            });
+                app_instance = this.options.app_;
 
-        // Populate the nr3d stuff
-        this.populateNr3d()
+                // Populate the nr3d stuff
+                this.options.app_.populateNr3d();
+            });
 
     }
 
@@ -167,11 +169,17 @@ class App {
 
         var instance_labels = this.nr3d[this.scene_id];
 
+        var first_object_el = -1;
         for (const instance_label in instance_labels) {
             var st = '<button type="button" class="list-group-item list-group-item-action" id="' + instance_label + '"' + '>' + instance_label + '</button>'
             var el = this.htmlToElement(st)
             el.addEventListener("click", this.populateObjectsList, false)
             instance_labels_list.appendChild(el)
+
+            if (first_object_el === -1) {
+                app_instance.prePopulateObjectsList(instance_label);
+                first_object_el = 0;
+            }
         }
     }
 
@@ -213,12 +221,45 @@ class App {
             var el = app_instance.htmlToElement(st)
             el.addEventListener("click", app_instance.showObjectUtterances, false)
 
-            if (first_object_el === -1) {
-                el.showObjectUtterances();
-                first_object_el = 2;
-            }
+            // if (first_object_el === -1) {
+            //     el.showObjectUtterances();
+            //     first_object_el = 2;
+            // }
 
             objects_list.appendChild(el)
+        }
+    }
+
+    prePopulateObjectsList(id) {
+        // Remove any previous bounding boxes
+        app_instance.viewer.removeCubes()
+
+        // Unselect previously selected (if applicable)
+        app_instance.unselectButtons(true);
+
+        // Remove any previous utterances
+        app_instance.clearObjectsAndUtterances(true);
+
+        // Populate the objects
+        var objects_list = document.getElementById('objects_list');
+
+        app_instance.selected_instance_label = id;
+        app_instance.selectButton(id);
+
+        var first_object = -1;
+        for (const object_id in app_instance.nr3d[app_instance.scene_id][id]) {
+            var st = '<button type="button" class="list-group-item list-group-item-action" id="' + object_id + '"' + '>' + object_id + '</button>'
+            var el = app_instance.htmlToElement(st)
+            el.addEventListener("click", app_instance.showObjectUtterances, false);
+            objects_list.appendChild(el);
+
+            if (first_object === -1) {
+                alert("Calling");
+                app_instance.preselectObjectUtterances(object_id);
+                first_object = 0;
+            }
+
+
         }
     }
 
@@ -241,6 +282,40 @@ class App {
         app_instance.viewer.load_cubes();
 
         var utterances = app_instance.nr3d[app_instance.scene_id][app_instance.selected_instance_label][this.id]
+        for (var i = 0; i < utterances.length; i++) {
+            // Add the new utterances (in case of using table)
+            // var row = el.insertRow(0);
+            // var cell = row.insertCell(0);
+            // cell.innerHTML = utterances[i]
+
+            var st = '<li class="list-group-item ">"' + utterances[i] + '"</li>';
+            var el = app_instance.htmlToElement(st);
+            object_utterances_list.appendChild(el);
+
+        }
+
+    }
+
+    preselectObjectUtterances(id) {
+        alert("")
+        // remove any previous utterances
+        app_instance.clearObjectsAndUtterances(false);
+
+        // Display the Object utterances
+        var object_utterances_list = document.getElementById("object_utterances");
+
+        // Unselect previously selected (if applicable)
+        app_instance.unselectButtons(false);
+
+        // Show the bouding boxes
+        app_instance.viewer.removeCubes();
+        app_instance.selected_object_id = id;
+        app_instance.selectButton(id);
+
+        app_instance.viewer.options.sti = app_instance.bboxes[app_instance.selected_object_id];
+        app_instance.viewer.load_cubes();
+
+        var utterances = app_instance.nr3d[app_instance.scene_id][app_instance.selected_instance_label][id]
         for (var i = 0; i < utterances.length; i++) {
             // Add the new utterances (in case of using table)
             // var row = el.insertRow(0);
