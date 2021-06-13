@@ -68,6 +68,8 @@ class App {
         if (options.model) {
             this.view(options.model, '', new Map());
         }
+
+        this.showSpinner();
     }
 
     /**
@@ -141,6 +143,8 @@ class App {
                     this.validationCtrl.validate(fileURL, rootPath, fileMap, gltf);
                 }
                 cleanup();
+                this.hideSpinner();
+
                 app_instance = this.options.app_;
 
                 // Populate the nr3d stuff
@@ -358,6 +362,15 @@ class App {
         el.className = el.className.replace('active', '');
         el.className += ' active';
     }
+
+    showSpinner () {
+        this.spinnerEl.style.display = '';
+    }
+
+    hideSpinner () {
+        this.spinnerEl.style.display = 'none';
+    };
+
 }
 
 // A crime and I am sorry about it
