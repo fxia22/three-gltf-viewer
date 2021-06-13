@@ -254,7 +254,6 @@ class App {
             objects_list.appendChild(el);
 
             if (first_object === -1) {
-                alert("Calling");
                 app_instance.preselectObjectUtterances(object_id);
                 first_object = 0;
             }
@@ -297,7 +296,6 @@ class App {
     }
 
     preselectObjectUtterances(id) {
-        alert("")
         // remove any previous utterances
         app_instance.clearObjectsAndUtterances(false);
 
