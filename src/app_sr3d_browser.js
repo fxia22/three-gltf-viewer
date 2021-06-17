@@ -54,6 +54,7 @@ class App {
         this.viewer = null;
         this.viewerEl = null;
         this.spinnerEl = el.querySelector('.spinner');
+        this.legendEl = el.querySelector('.legend');
         this.dropEl = el.querySelector('.scan_viewer');
         this.inputEl = el.querySelector('#file-input');
         this.validationCtrl = new ValidationController(el);
@@ -145,6 +146,7 @@ class App {
                 }
                 cleanup();
                 this.hideSpinner();
+                this.showLegend();
 
                 app_instance = this.options.app_;
 
@@ -370,6 +372,10 @@ class App {
 
     hideSpinner () {
         this.spinnerEl.style.display = 'none';
+    };
+
+    showLegend() {
+        this.style.visibility='visible';
     };
 
 }
