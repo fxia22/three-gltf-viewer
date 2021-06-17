@@ -375,7 +375,7 @@ class App {
     };
 
     showLegend() {
-        this.style.visibility='visible';
+        this.legendEl.style.visibility='visible';
     };
 
 }
