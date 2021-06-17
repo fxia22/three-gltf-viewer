@@ -255,7 +255,7 @@ export class Viewer {
         //var material = new THREE.MeshBasicMaterial( {color: 0xffff00,  opacity: 0.0,
         //transparent: true} );
         var edges = new THREE.EdgesGeometry(geometry);
-        var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0x00ff00, linewidth: 3}));
+        var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0x00ff00, linewidth: 5}));
         line.name = toString(this.counter)
         this.added_line_names.push(line.name)
         this.counter += 1;
